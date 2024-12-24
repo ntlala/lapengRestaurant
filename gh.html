@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Restaurant Menu</title>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .menu-header {
+        background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),
+          url("/api/placeholder/1200/400");
+        background-size: cover;
+        color: white;
+        padding: 4rem 0;
+        position: relative;
+      }
+
+      .cart-button {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1000;
+        background-color: #dc3545;
+        border: none;
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        color: white;
+        cursor: pointer;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      .cart-count {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        background-color: white;
+        color: #dc3545;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .cart-sidebar {
+        position: fixed;
+        top: 50%;
+        right: -350px;
+        width: 350px;
+        height: 80%;
+        background-color: white;
+        box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1001;
+        padding: 20px;
+        transform: translateY(-50%);
+      }
+
+      .cart-sidebar.active {
+        right: 0;
+      }
+
+      .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: none;
+        z-index: 1000;
+      }
+
+      .menu-item {
+        border-bottom: 1px solid #eee;
+        padding: 15px 0;
+        display: flex;
+        align-items: center;
+      }
+
+      .menu-item img {
+        width: 50px;
+        height: 50px;
+        margin-right: 15px;
+        border-radius: 5px;
+      }
+
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background-color: #28a745;
+        color: white;
+        padding: 15px 25px;
+        border-radius: 5px;
+        display: none;
+        z-index: 1002;
+        animation: slideIn 0.3s ease;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+        }
+        to {
+          transform: translateX(0);
+        }
+      }
+
+      .category-title {
+        color: #dc3545;
+        border-bottom: 2px solid #dc3545;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="menu-header text-center">
+      <h1 class="display-4">MENU</h1>
+    </div>
+
+    <button class="cart-button" id="cartButton">
+      <i class="fas fa-shopping-cart"></i>
+      <span class="cart-count" id="cartCount">0</span>
+    </button>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="cart-sidebar" id="cartSidebar">
+      <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3>Your Cart</h3>
+        <button class="btn btn-link" id="closeCart">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div id="cartItems" class="mb-4"></div>
+      <div class="border-top pt-3">
+        <div class="d-flex justify-content-between mb-3">
+          <h5>Total:</h5>
+          <h5 id="cartTotal">M0</h5>
+        </div>
+        <button class="btn btn-danger w-100" id="checkoutBtn">
+          Checkout (Free Delivery)
+        </button>
+      </div>
+    </div>
+
+    <div class="container my-5">
+      <div class="row">
+        <div class="col-lg-8 mx-auto">
+          <section class="mb-5">
+            <h2 class="category-title">SPECIAL DISHES</h2>
+            <div class="menu-items">
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="NYEKOE" />
+                <span>NYEKOE</span>
+                <div>
+                  <span class="text-danger me-3">M25</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('NYEKOE', 25)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="PAPA & MOHOLU" />
+                <span>PAPA & MOHOLU</span>
+                <div>
+                  <span class="text-danger me-3">M40</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('PAPA & MOHOLU', 40)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="PAPA & LINAOA" />
+                <span>PAPA & LINAOA</span>
+                <div>
+                  <span class="text-danger me-3">M30</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('PAPA & LINAOA', 30)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="mb-5">
+            <h2 class="category-title">SPECIAL DRINKS</h2>
+            <div class="menu-items">
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="WATER" />
+                <span>WATER</span>
+                <div>
+                  <span class="text-danger me-3">M15</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('WATER', 15)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="BEER" />
+                <span>BEER</span>
+                <div>
+                  <span class="text-danger me-3">M20</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('BEER', 20)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="MOTOHO" />
+                <span>MOTOHO</span>
+                <div>
+                  <span class="text-danger me-3">M20</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('MOTOHO', 20)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="mb-5">
+            <h2 class="category-title">SPECIAL DESERTS</h2>
+            <div class="menu-items">
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="LIPABI" />
+                <span>LIPABI</span>
+                <div>
+                  <span class="text-danger me-3">M5</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('LIPABI', 5)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+              <div class="menu-item">
+                <img src="https://via.placeholder.com/50" alt="LIKHOBE" />
+                <span>LIKHOBE</span>
+                <div>
+                  <span class="text-danger me-3">M10</span>
+                  <button
+                    class="btn btn-outline-danger btn-sm"
+                    onclick="addToCart('LIKHOBE', 10)"
+                  >
+                    Add to Cart
+                  </button>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    </div>
+
+    <div class="notification" id="notification">Item added to cart!</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+    <script>
+      let cart = [];
+      const cartButton = document.getElementById("cartButton");
+      const cartSidebar = document.getElementById("cartSidebar");
+      const overlay = document.getElementById("overlay");
+      const closeCart = document.getElementById("closeCart");
+      const cartItems = document.getElementById("cartItems");
+      const cartTotal = document.getElementById("cartTotal");
+      const cartCount = document.getElementById("cartCount");
+      const notification = document.getElementById("notification");
+      const checkoutBtn = document.getElementById("checkoutBtn");
+
+      cartButton.addEventListener("click", toggleCart);
+      closeCart.addEventListener("click", toggleCart);
+      overlay.addEventListener("click", toggleCart);
+
+      function toggleCart() {
+        cartSidebar.classList.toggle("active");
+        overlay.style.display =
+          overlay.style.display === "block" ? "none" : "block";
+      }
+
+      function addToCart(name, price) {
+        const existingItem = cart.find((item) => item.name === name);
+
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({ name, price, quantity: 1 });
+        }
+
+        updateCart();
+        showNotification();
+      }
+
+      function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCart();
+      }
+
+      function updateQuantity(index, delta) {
+        cart[index].quantity += delta;
+        if (cart[index].quantity <= 0) {
+          cart.splice(index, 1);
+        }
+        updateCart();
+      }
+
+      function updateCart() {
+        cartItems.innerHTML = cart
+          .map(
+            (item, index) => `        
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <div>
+                        <h6 class="mb-0">${item.name}</h6>
+                        <small class="text-muted">M${item.price} x ${item.quantity}</small>
+                    </div>
+                    <div class="d-flex align-items-center">
+                        <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity(${index}, -1)">-</button>
+                        <span class="mx-2">${item.quantity}</span>
+                        <button class="btn btn-sm btn-outline-secondary me-2" onclick="updateQuantity(${index}, 1)">+</button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="removeFromCart(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `
+          )
+          .join("");
+
+        const total = cart.reduce(
+          (sum, item) => sum + item.price * item.quantity,
+          0
+        );
+        cartTotal.textContent = `M${total}`;
+        cartCount.textContent = cart.reduce(
+          (sum, item) => sum + item.quantity,
+          0
+        );
+      }
+
+      function showNotification() {
+        notification.style.display = "block";
+        setTimeout(() => {
+          notification.style.display = "none";
+        }, 2000);
+      }
+
+      checkoutBtn.addEventListener("click", () => {
+        if (cart.length > 0) {
+          alert(
+            "Thank you for your order! Your food will be delivered shortly."
+          );
+          cart = [];
+          updateCart();
+          toggleCart();
+        }
+      });
+    </script>
+  </body>
+</html>
